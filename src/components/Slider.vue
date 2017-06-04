@@ -1,0 +1,47 @@
+<template>
+  <div :class="$style.slider">
+    <div :class="{ [$style.sliderItem]: true, [$style.current]: i === current}" v-for="(item, i) in items" @mouseover="selectItem(i)">
+    </div>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "slider",
+  methods: {
+    selectItem(i) {
+      this.$store.dispatch("updateCurrent", i);
+    }
+  },
+  computed: {
+    current() {
+      return this.$store.state.current;
+    },
+    items() {
+      return this.$store.state.transitions;
+    }
+  }
+}
+</script>
+
+<style module>
+.slider {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.sliderItem {
+  width: 100%;
+  text-align: center;
+  line-height: 25px;
+  height: 25px;
+  border: solid 1px #CCCCCC;
+}
+
+.sliderItem:hover,
+.current {
+  background: #EEEEEE;
+}
+</style>

@@ -1,28 +1,29 @@
 <template>
-  <div id="app">
-    <img src="./assets/logo.png">
-    <hello></hello>
-  </div>
+  <Layout :title="title">
+    <Editor slot="editor"></Editor>
+    <Slider slot="slider"></Slider>
+    <Controls slot="controls"></Controls>
+  </Layout>
 </template>
 
 <script>
-import Hello from './components/Hello'
+import Layout from "./components/Layout";
+import Editor from "./components/Editor";
+import Controls from "./components/Controls";
+import Slider from "./components/Slider";
 
 export default {
-  name: 'app',
-  components: {
-    Hello
-  }
-}
+  name: "app",
+  props: ["title"],
+  components: { Layout, Editor, Controls, Slider }
+};
 </script>
 
-<style>
-#app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+<style src="normalize.css/normalize.css"></style>
+
+<style module>
+body {
+  font-size: 14px;
+  font-family: Arial, Helvetica, sans-serif;
 }
 </style>
