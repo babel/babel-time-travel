@@ -1,6 +1,7 @@
 import registerPromiseWorker from "promise-worker/register";
 import generate from "babel-generator";
 import babelPresetBabili from "babel-preset-babili";
+import prettier from "prettier";
 
 importScripts("//unpkg.com/babel-standalone@6/babel.min.js");
 
@@ -18,7 +19,9 @@ registerPromiseWorker(function babelTransform({ source, options = {} }) {
   Object.assign(options, {
     wrapPluginVisitorMethod(pluginAlias, visitorType, callback) {
       return function(...args) {
-        const { code } = generate(getProgramParent(args[0]).node);
+        const code = prettier.format(
+          generate(getProgramParent(args[0]).node).code
+        );
         if (transitions[transitions.length - 1] !== code) {
           transitions.push(code);
         }
