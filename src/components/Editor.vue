@@ -9,19 +9,18 @@ import "codemirror/mode/javascript/javascript";
 
 export default {
   data() {
-    return {};
-  },
-  computed: {
-    editorOptions() {
-      return {
-        readOnly: !this.$store.state.isEditing,
+    return {
+      editorOptions: {
         mode: "javascript",
         tabSize: 2,
         lineNumbers: true,
         line: true,
-        foldGutter: true
-      };
-    },
+        foldGutter: true,
+        lineWrapping: true
+      }
+    };
+  },
+  computed: {
     code: {
       get() {
         return this.$store.state.transitions[this.$store.state.current];

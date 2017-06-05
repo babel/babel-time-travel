@@ -5,10 +5,8 @@ import PromiseWorker from "promise-worker";
 Vue.use(Vuex);
 
 import _babelWorker from "worker-loader!./babel-worker.js";
-import _printerWorker from "worker-loader!./printer-worker.js";
 
 export const babelWorker = new PromiseWorker(_babelWorker());
-export const printerWorker = new PromiseWorker(_printerWorker());
 
 export default new Vuex.Store({
   strict: true,
@@ -17,8 +15,7 @@ export default new Vuex.Store({
     transitions: ["class Foo {}"],
     options: {
       presets: ["es2015", "babili"]
-    },
-    isEditing: true
+    }
   },
   getters: {
     availablePresets() {
@@ -34,9 +31,6 @@ export default new Vuex.Store({
     updateSource(state, source) {
       state.transitions[0] = source;
     },
-    updateOptions(state, options) {
-      Object.assign(state.options, options);
-    },
     updatePresets(state, presets) {
       state.options.presets = [...presets];
     },
@@ -46,9 +40,6 @@ export default new Vuex.Store({
     },
     receiveResult(state, transitions) {
       state.transitions.push(...transitions);
-    },
-    makeReadOnly(state) {
-      state.isEditing = false;
     }
   },
   actions: {
@@ -59,12 +50,7 @@ export default new Vuex.Store({
           source: state.transitions[0],
           options: state.options
         })
-        .then(result =>
-          Promise.all(
-            result.transitions.map(code => printerWorker.postMessage({ code }))
-          )
-        )
-        .then(transitions => {
+        .then(({ transitions }) => {
           commit("receiveResult", transitions);
           return transitions;
         });

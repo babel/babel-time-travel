@@ -1,6 +1,5 @@
 import registerPromiseWorker from "promise-worker/register";
 import babelPresetBabili from "babel-preset-babili";
-import PromiseWorker from "promise-worker";
 import generate from "babel-generator";
 
 importScripts("//unpkg.com/babel-standalone@6.24.2/babel.min.js");
