@@ -31,7 +31,7 @@ var webpackConfig = merge(baseWebpackConfig, {
       "process.env": env
     }),
     // Let's use Babili Plugin
-    // new BabiliPlugin(),
+    new BabiliPlugin(),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath("css/[name].[contenthash].css")
