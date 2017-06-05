@@ -52,19 +52,20 @@ export default {
 
 .main {
   --width: calc(100vw - 100px);
-  --height: 70vh;
+  --height: 65vh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  margin-bottom: 20px;
 }
 
 .controls {
   width: var(--width);
   display: flex;
   justify-content: flex-end;
-  height: 50px;
   align-items: center;
+  margin-bottom: 20px;
 }
 
 .slider {
