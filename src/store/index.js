@@ -1,6 +1,7 @@
 import Vue from "vue";
 import Vuex from "vuex";
-import PromiseWorker from "promise-worker";
+import PromiseWorker from "promise-worker-transferable";
+import { str2ab, ab2str } from "./buffer-utils";
 
 Vue.use(Vuex);
 
@@ -45,15 +46,15 @@ export default new Vuex.Store({
   actions: {
     compile({ commit, getters, state }) {
       commit("clearTransitions");
-      return babelWorker
-        .postMessage({
-          source: state.transitions[0],
-          options: state.options
-        })
-        .then(({ transitions }) => {
-          commit("receiveResult", transitions);
-          return transitions;
-        });
+      const message = {
+        source: str2ab(state.transitions[0]),
+        options: state.options
+      };
+      return babelWorker.postMessage(message, [message.source]).then(result => {
+        const transitions = result.transitions.map(buf => ab2str(buf));
+        commit("receiveResult", transitions);
+        return transitions;
+      });
     }
   }
 });

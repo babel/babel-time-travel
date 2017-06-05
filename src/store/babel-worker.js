@@ -1,10 +1,14 @@
-import registerPromiseWorker from "promise-worker/register";
+import registerPromiseWorker from "promise-worker-transferable/register";
 import babelPresetBabili from "babel-preset-babili";
 import generate from "babel-generator";
+import { str2ab, ab2str } from "./buffer-utils";
 
 importScripts("//unpkg.com/babel-standalone@6.24.2/babel.min.js");
 
-registerPromiseWorker(function babelTransform({ source, options = {} }) {
+registerPromiseWorker(function babelTransform(
+  { source, options = {} },
+  withTransferList
+) {
   if (Array.isArray(options.presets)) {
     for (const [i, preset] of options.presets.entries()) {
       if (preset === "babili") {
@@ -30,11 +34,13 @@ registerPromiseWorker(function babelTransform({ source, options = {} }) {
     }
   });
 
-  const output = Babel.transform(source, options).code;
+  const output = Babel.transform(ab2str(source), options).code;
 
   transitions.push(output);
 
-  return { transitions };
+  const buffers = transitions.map(code => str2ab(code));
+
+  return withTransferList({ transitions: buffers }, [...buffers]);
 });
 
 function getProgramParent(path) {
