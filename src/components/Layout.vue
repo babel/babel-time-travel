@@ -1,7 +1,12 @@
 <template>
   <div :class="$style.container">
     <header :class="$style.header">
-      <h1>{{title}}</h1>
+      <h1 :class="$style.headerItem">{{title}}</h1>
+      <div :class="$style.headerItem">
+        <a href="https://github.com/boopathi/babel-time-travel" target="_blank">
+          <img src="//cdnjs.cloudflare.com/ajax/libs/octicons/4.4.0/svg/mark-github.svg" width="24" height="24" />
+        </a>
+      </div>
     </header>
     <main :class="$style.main">
       <div :class="$style.controls">
@@ -14,6 +19,9 @@
         <slot name="slider"></slot>
       </div>
     </main>
+    <footer :class="$style.footer">
+      <slot name="footer"></slot>
+    </footer>
   </div>
 </template>
 
@@ -25,6 +33,17 @@ export default {
 </script>
 
 <style module>
+.header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.headerItem {
+  padding: 0 10px;
+}
+
 .header h1 {
   text-align: center;
   font-size: 1.5em;
@@ -62,5 +81,9 @@ export default {
 .editor :global(.CodeMirror) {
   width: var(--width);
   height: var(--height);
+}
+
+.footer {
+  width: var(--width);
 }
 </style>
