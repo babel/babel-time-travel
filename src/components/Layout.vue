@@ -15,6 +15,9 @@
       <div :class="$style.editor">
         <slot name="editor"></slot>
       </div>
+      <div :class="$style.errors">
+        <slot name="errors"></slot>
+      </div>
       <div :class="$style.slider">
         <slot name="slider"></slot>
       </div>
@@ -33,6 +36,12 @@ export default {
 </script>
 
 <style module>
+.container {
+  --width: calc(100vw - 100px);
+  --height: 65vh;
+  --grey: #CCCCCC;
+}
+
 .header {
   display: flex;
   flex-direction: row;
@@ -51,8 +60,6 @@ export default {
 }
 
 .main {
-  --width: calc(100vw - 100px);
-  --height: 65vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -73,8 +80,7 @@ export default {
 }
 
 .editor {
-  border: solid 1px #CCCCCC;
-
+  border: solid 1px var(--grey);
   width: var(--width);
   height: var(--height);
 }
@@ -82,6 +88,11 @@ export default {
 .editor :global(.CodeMirror) {
   width: var(--width);
   height: var(--height);
+}
+
+.errors {
+  width: var(--width);
+  position: relative;
 }
 
 .footer {

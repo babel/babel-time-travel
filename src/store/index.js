@@ -16,7 +16,8 @@ export default new Vuex.Store({
     transitions: ["class Foo {}"],
     options: {
       presets: ["es2015", "babili"]
-    }
+    },
+    error: void 0
   },
   getters: {
     availablePresets() {
@@ -30,6 +31,10 @@ export default new Vuex.Store({
       }
     },
     updateSource(state, source) {
+      // remove the error;
+      if (state.error) {
+        state.error = void 0;
+      }
       state.transitions[0] = source;
     },
     updatePresets(state, presets) {
@@ -41,20 +46,37 @@ export default new Vuex.Store({
     },
     receiveResult(state, transitions) {
       state.transitions.push(...transitions);
+    },
+    addError(state, error) {
+      state.error = error;
+    },
+    removeError(state) {
+      state.error = void 0;
     }
   },
   actions: {
-    compile({ commit, getters, state }) {
+    error({ commit }, error) {
+      commit("addError", error);
+      setTimeout(() => {
+        commit("removeError");
+      }, 5000);
+    },
+    compile({ commit, state, dispatch }) {
       commit("clearTransitions");
       const message = {
         source: str2ab(state.transitions[0]),
         options: state.options
       };
-      return babelWorker.postMessage(message, [message.source]).then(result => {
-        const transitions = result.transitions.map(buf => ab2str(buf));
-        commit("receiveResult", transitions);
-        return transitions;
-      });
+      return babelWorker
+        .postMessage(message, [message.source])
+        .then(result => {
+          const transitions = result.transitions.map(buf => ab2str(buf));
+          commit("receiveResult", transitions);
+          return transitions;
+        })
+        .catch(err => {
+          dispatch("error", err.message);
+        });
     }
   }
 });
