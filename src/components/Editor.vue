@@ -1,31 +1,34 @@
 <template>
-  <codemirror :code="code" :options="editorOptions" @change="onEditorCodeChange">
+  <codemirror v-model="code" :options="editorOptions">
   </codemirror>
 </template>
 
 <script>
-import { codemirror, CodeMirror } from "vue-codemirror";
+import { codemirror } from "vue-codemirror-lite";
+import "codemirror/mode/javascript/javascript";
 
 export default {
   data() {
-    return {
-      editorOptions: {
-        mode: "text/javascript",
+    return {};
+  },
+  computed: {
+    editorOptions() {
+      return {
+        readOnly: !this.$store.state.isEditing,
+        mode: "javascript",
         tabSize: 2,
         lineNumbers: true,
         line: true,
         foldGutter: true
+      };
+    },
+    code: {
+      get() {
+        return this.$store.state.transitions[this.$store.state.current];
+      },
+      set(code) {
+        this.$store.commit("updateSource", code);
       }
-    };
-  },
-  computed: {
-    code() {
-      return this.$store.state.transitions[this.$store.state.current];
-    }
-  },
-  methods: {
-    onEditorCodeChange(newCode) {
-      this.$store.dispatch("updateSource", newCode);
     }
   },
   components: {
@@ -35,5 +38,5 @@ export default {
 </script>
 
 <style module>
-.controls {}
+
 </style>

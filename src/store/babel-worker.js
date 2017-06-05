@@ -1,13 +1,11 @@
 import registerPromiseWorker from "promise-worker/register";
 import babelPresetBabili from "babel-preset-babili";
-import prettier from "prettier";
+import PromiseWorker from "promise-worker";
 import generate from "babel-generator";
 
-importScripts("//unpkg.com/babel-standalone@6/babel.min.js");
+importScripts("//unpkg.com/babel-standalone@6.24.2/babel.min.js");
 
 registerPromiseWorker(function babelTransform({ source, options = {} }) {
-  let transitions = [];
-
   if (Array.isArray(options.presets)) {
     for (const [i, preset] of options.presets.entries()) {
       if (preset === "babili") {
@@ -16,11 +14,15 @@ registerPromiseWorker(function babelTransform({ source, options = {} }) {
     }
   }
 
+  options.ast = false;
+  options.code = true;
+
+  const transitions = [];
+
   Object.assign(options, {
     wrapPluginVisitorMethod(pluginAlias, visitorType, callback) {
       return function(...args) {
-        const code = JSON.stringify(getProgramParent(args[0]).node);
-
+        const code = generate(getProgramParent(args[0]).node).code;
         if (transitions[transitions.length - 1] !== code) {
           transitions.push(code);
         }
@@ -30,15 +32,6 @@ registerPromiseWorker(function babelTransform({ source, options = {} }) {
   });
 
   const output = Babel.transform(source, options).code;
-
-  // prettier code
-  let _transitions = [];
-  for (let i = 0; i < transitions.length; i++) {
-    const code = prettier.format(generate(JSON.parse(transitions[i])).code);
-    if (i === 0 || transitions[i - 1] !== code) {
-      _transitions;
-    }
-  }
 
   transitions.push(output);
 

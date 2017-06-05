@@ -4,9 +4,11 @@ import PromiseWorker from "promise-worker";
 
 Vue.use(Vuex);
 
-import _babelWorker from "worker-loader!../worker.js";
+import _babelWorker from "worker-loader!./babel-worker.js";
+import _printerWorker from "worker-loader!./printer-worker.js";
 
 export const babelWorker = new PromiseWorker(_babelWorker());
+export const printerWorker = new PromiseWorker(_printerWorker());
 
 export default new Vuex.Store({
   strict: true,
@@ -14,9 +16,14 @@ export default new Vuex.Store({
     current: 0,
     transitions: ["class Foo {}"],
     options: {
-      presets: ["es2015"]
+      presets: ["es2015", "babili"]
     },
-    errors: []
+    isEditing: true
+  },
+  getters: {
+    availablePresets() {
+      return ["es2015", "stage-0", "stage-1", "stage-2", "stage-3", "babili"];
+    }
   },
   mutations: {
     updateCurrent(state, current) {
@@ -30,33 +37,36 @@ export default new Vuex.Store({
     updateOptions(state, options) {
       Object.assign(state.options, options);
     },
+    updatePresets(state, presets) {
+      state.options.presets = [...presets];
+    },
     clearTransitions(state) {
       state.transitions = [state.transitions[0]];
       state.current = 0;
     },
-    receiveResult(state, { transitions, errors }) {
-      if (Array.isArray(transitions)) state.transitions.push(...transitions);
-      if (Array.isArray(errors)) state.errors.push(...errors);
+    receiveResult(state, transitions) {
+      state.transitions.push(...transitions);
+    },
+    makeReadOnly(state) {
+      state.isEditing = false;
     }
   },
   actions: {
-    updateCurrent({ commit }, current) {
-      commit("updateCurrent", current);
-    },
-    updateSource({ commit }, source) {
-      commit("updateSource", source);
-    },
-    updateOptions({ commit }, options) {
-      commit("updateOptions", options);
-    },
-    transform({ commit, state: { transitions, options } }, presets) {
-      const source = transitions[0];
+    compile({ commit, getters, state }) {
       commit("clearTransitions");
       return babelWorker
-        .postMessage({ source, options: { presets } })
-        .then(result => {
-          commit("receiveResult", result);
-          return result;
+        .postMessage({
+          source: state.transitions[0],
+          options: state.options
+        })
+        .then(result =>
+          Promise.all(
+            result.transitions.map(code => printerWorker.postMessage({ code }))
+          )
+        )
+        .then(transitions => {
+          commit("receiveResult", transitions);
+          return transitions;
         });
     }
   }

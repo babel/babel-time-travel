@@ -10,7 +10,7 @@ export default {
   name: "slider",
   methods: {
     selectItem(i) {
-      this.$store.dispatch("updateCurrent", i);
+      this.$store.commit("updateCurrent", i);
     }
   },
   computed: {

@@ -19,8 +19,6 @@ export default {
 };
 </script>
 
-<style src="normalize.css/normalize.css"></style>
-
 <style module>
 body {
   font-size: 14px;
