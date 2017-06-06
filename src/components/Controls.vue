@@ -6,7 +6,10 @@
     </div>
 
     <div>
-      <button :class="$style.compile" @click="compile">Compile</button>
+      <button :class="[$style.button, $style.green]" @click="compile">Compile</button>
+    </div>
+    <div>
+      <button :class="[$style.button, $style.red]" @click="clear">Clear Caches</button>
     </div>
   </div>
 </template>
@@ -30,6 +33,10 @@ export default {
   methods: {
     compile() {
       this.$store.dispatch("compile");
+    },
+    clear() {
+      this.$store.dispatch("unregisterSw");
+      this.$store.dispatch("clearCaches");
     }
   }
 };
@@ -42,8 +49,6 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: space-around;
-  --green: #1ECD97;
-  --gray: #bbbbbb;
   --ht: 40px;
 }
 
@@ -99,15 +104,15 @@ export default {
   transform: scale(1);
 }
 
-.compile {
+.button {
   outline: none;
   height: var(--ht);
   text-align: center;
-  width: 130px;
+  padding: 0 16px;
   border-radius: 40px;
-  background: #fff;
-  border: 2px solid var(--green);
-  color: var(--green);
+  background: white;
+  border: 2px solid black;
+  color: black;
   letter-spacing: 1px;
   text-shadow: 0;
   font-size: 12px;
@@ -116,12 +121,30 @@ export default {
   transition: all 0.25s ease;
 }
 
-.compile:hover {
+.button:hover {
   color: white;
+  background: black;
+}
+
+.button:active {
+  letter-spacing: 2px;
+}
+
+.green {
+  border-color: var(--green);
+  color: var(--green);
+}
+
+.green:hover {
   background: var(--green);
 }
 
-.compile:active {
-  letter-spacing: 2px;
+.red {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.red:hover {
+  background: var(--red);
 }
 </style>

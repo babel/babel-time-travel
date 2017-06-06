@@ -39,7 +39,6 @@ export default {
 .container {
   --width: calc(100vw - 100px);
   --height: 65vh;
-  --grey: #CCCCCC;
 }
 
 .header {
@@ -77,10 +76,12 @@ export default {
 
 .slider {
   width: var(--width);
+  border: solid 1px var(--gray);
 }
 
 .editor {
-  border: solid 1px var(--grey);
+  border: solid 1px var(--gray);
+  border-bottom: 0;
   width: var(--width);
   height: var(--height);
 }

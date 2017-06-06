@@ -5,6 +5,7 @@ var merge = require("webpack-merge");
 var baseWebpackConfig = require("./webpack.base.conf");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var FriendlyErrorsPlugin = require("friendly-errors-webpack-plugin");
+var swWebpackConfig = require("./webpack.sw.conf");
 
 // add hot-reload related code to entry chunks
 Object.keys(baseWebpackConfig.entry).forEach(function(name) {
@@ -13,7 +14,7 @@ Object.keys(baseWebpackConfig.entry).forEach(function(name) {
   );
 });
 
-module.exports = merge(baseWebpackConfig, {
+const webpackConfig = merge(baseWebpackConfig, {
   module: {
     rules: utils.styleLoaders({ sourceMap: config.dev.cssSourceMap })
   },
@@ -35,3 +36,15 @@ module.exports = merge(baseWebpackConfig, {
     new FriendlyErrorsPlugin()
   ]
 });
+
+const swConfig = merge(swWebpackConfig, {
+  devtool: "cheap-module-inline-source-map",
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env": config.dev.env
+    }),
+    new webpack.NoEmitOnErrorsPlugin()
+  ]
+});
+
+module.exports = [webpackConfig, swConfig];

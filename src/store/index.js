@@ -17,7 +17,8 @@ export default new Vuex.Store({
     options: {
       presets: ["es2015", "babili"]
     },
-    error: void 0
+    error: void 0,
+    sw: null
   },
   getters: {
     availablePresets() {
@@ -52,6 +53,12 @@ export default new Vuex.Store({
     },
     removeError(state) {
       state.error = void 0;
+    },
+    setSw(state, reg) {
+      state.sw = reg;
+    },
+    removeSw(state) {
+      state.sw = null;
     }
   },
   actions: {
@@ -77,6 +84,34 @@ export default new Vuex.Store({
         .catch(err => {
           dispatch("error", err.message);
         });
+    },
+    registerSw({ commit }) {
+      if (navigator.serviceWorker) {
+        navigator.serviceWorker.register("/sw.js").then(registration => {
+          commit("setSw", registration);
+        });
+      }
+    },
+    clearCaches() {
+      if (caches) {
+        return caches
+          .keys()
+          .then(keyList => Promise.all(keyList.map(key => caches.delete(key))))
+          .then(() => console.log("All caches removed"))
+          .catch(err => console.error(err));
+      }
+    },
+    unregisterSw({ state, commit }) {
+      if (state.sw) {
+        return state.sw.unregister().then(isUnregistered => {
+          if (isUnregistered) {
+            console.log("ServiceWorker unregistered");
+            commit("removeSw");
+          } else {
+            console.error(new Error("UnRegistering ServiceWorker failed"));
+          }
+        });
+      }
     }
   }
 });

@@ -9,6 +9,7 @@ var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
 var BabiliPlugin = require("babili-webpack-plugin");
+var swWebpackConfig = require("./webpack.sw.conf");
 
 var env = config.build.env;
 
@@ -111,4 +112,13 @@ if (config.build.bundleAnalyzerReport) {
   webpackConfig.plugins.push(new BundleAnalyzerPlugin());
 }
 
-module.exports = webpackConfig;
+const swConfig = merge(swWebpackConfig, {
+  plugins: [
+    new webpack.DefinePlugin({
+      "process.env": env
+    }),
+    new BabiliPlugin()
+  ]
+});
+
+module.exports = [webpackConfig, swConfig];

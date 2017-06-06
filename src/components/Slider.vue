@@ -37,11 +37,15 @@ export default {
   text-align: center;
   line-height: 25px;
   height: 25px;
-  border: solid 1px #CCCCCC;
+  border-right: solid 1px var(--gray);
+}
+
+.sliderItem:last-child {
+  border-right: 0;
 }
 
 .sliderItem:hover,
 .current {
-  background: #EEEEEE;
+  background: var(--green);
 }
 </style>

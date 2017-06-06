@@ -21,10 +21,19 @@ var autoOpenBrowser = !!config.dev.autoOpenBrowser;
 var proxyTable = config.dev.proxyTable;
 
 var app = express();
-var compiler = webpack(webpackConfig);
+var compiler = webpack(webpackConfig[0]);
+var swCompiler = webpack(webpackConfig[1]);
+
+var swDevMiddleware = require("webpack-dev-middleware")(swCompiler, {
+  publicPath: webpackConfig[1].output.publicPath,
+  quiet: true,
+  headers: {
+    "Content-Type": "application/javascript"
+  }
+});
 
 var devMiddleware = require("webpack-dev-middleware")(compiler, {
-  publicPath: webpackConfig.output.publicPath,
+  publicPath: webpackConfig[0].output.publicPath,
   quiet: true
 });
 
@@ -53,6 +62,9 @@ app.use(require("connect-history-api-fallback")());
 
 // serve webpack bundle output
 app.use(devMiddleware);
+
+// serve webpack for sw bundle output
+app.use(swDevMiddleware);
 
 // enable hot-reload and state-preserving
 // compilation error display
