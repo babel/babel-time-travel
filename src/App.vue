@@ -27,8 +27,6 @@ export default {
 body {
   font-size: 14px;
   font-family: Arial, Helvetica, sans-serif;
-  --green: #4CAF50;
-  --red: #ff5252;
   --gray: #bbbbbb;
 }
 </style>

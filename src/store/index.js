@@ -13,7 +13,13 @@ export default new Vuex.Store({
   strict: true,
   state: {
     current: 0,
-    transitions: ["class Foo {}"],
+    transitions: [
+      {
+        code: "class Foo {}",
+        pluginAlias: "source",
+        visitorType: "enter"
+      }
+    ],
     options: {
       presets: ["es2015", "babili"]
     },
@@ -31,12 +37,12 @@ export default new Vuex.Store({
         state.current = current;
       }
     },
-    updateSource(state, source) {
+    updateSource(state, code) {
       // remove the error;
       if (state.error) {
         state.error = void 0;
       }
-      state.transitions[0] = source;
+      state.transitions[0] = { code };
     },
     updatePresets(state, presets) {
       state.options.presets = [...presets];
@@ -70,14 +76,22 @@ export default new Vuex.Store({
     },
     compile({ commit, state, dispatch }) {
       commit("clearTransitions");
+
       const message = {
-        source: str2ab(state.transitions[0]),
+        source: str2ab(state.transitions[0].code),
         options: state.options
       };
       return babelWorker
         .postMessage(message, [message.source])
         .then(result => {
-          const transitions = result.transitions.map(buf => ab2str(buf));
+          const transitions = result.transitions.map(
+            ({ code, pluginAlias, visitorType }) => ({
+              code: ab2str(code),
+              pluginAlias,
+              visitorType
+            })
+          );
+
           commit("receiveResult", transitions);
           return transitions;
         })

@@ -23,7 +23,7 @@ export default {
   computed: {
     code: {
       get() {
-        return this.$store.state.transitions[this.$store.state.current];
+        return this.$store.state.transitions[this.$store.state.current].code;
       },
       set(code) {
         this.$store.commit("updateSource", code);

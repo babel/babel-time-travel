@@ -25,9 +25,12 @@ registerPromiseWorker(function babelTransform(
   Object.assign(options, {
     wrapPluginVisitorMethod(pluginAlias, visitorType, callback) {
       return function(...args) {
-        const code = generate(getProgramParent(args[0]).node).code;
-        if (transitions[transitions.length - 1] !== code) {
-          transitions.push(code);
+        const { code } = generate(getProgramParent(args[0]).node);
+        if (
+          transitions.length === 0 ||
+          transitions[transitions.length - 1].code !== code
+        ) {
+          transitions.push({ code, pluginAlias, visitorType });
         }
         callback.call(this, ...args);
       };
@@ -36,11 +39,22 @@ registerPromiseWorker(function babelTransform(
 
   const output = Babel.transform(ab2str(source), options).code;
 
-  transitions.push(output);
+  transitions.push({
+    code: output,
+    pluginAlias: "output",
+    visitorType: "exit"
+  });
 
-  const buffers = transitions.map(code => str2ab(code));
+  // convert to array buffers and extract buffers
+  const buffers = [];
+  for (const transition of transitions) {
+    Object.assign(transition, {
+      code: str2ab(transition.code)
+    });
+    buffers.push(transition.code);
+  }
 
-  return withTransferList({ transitions: buffers }, [...buffers]);
+  return withTransferList({ transitions }, buffers);
 });
 
 function getProgramParent(path) {

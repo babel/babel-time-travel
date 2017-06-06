@@ -1,6 +1,13 @@
 <template>
-  <div :class="$style.slider">
-    <div :class="{ [$style.sliderItem]: true, [$style.current]: i === current}" v-for="(item, i) in items" @mouseover="selectItem(i)">
+  <div :class="$style.container">
+    <div :class="$style.slider">
+      <div :class="{ [$style.sliderItem]: true, [$style.current]: i === current}" v-for="(item, i) in items" @mouseover="selectItem(i)">
+      </div>
+    </div>
+    <div :class="$style.info">
+      Current Plugin:
+      <span :class="$style.plugin">{{currentPlugin}}</span>, Current Visitor:
+      <span :class="$style.visitor">{{currentVisitor}}</span>
     </div>
   </div>
 </template>
@@ -14,6 +21,12 @@ export default {
     }
   },
   computed: {
+    currentPlugin() {
+      return this.$store.state.transitions[this.current].pluginAlias;
+    },
+    currentVisitor() {
+      return this.$store.state.transitions[this.current].visitorType;
+    },
     current() {
       return this.$store.state.current;
     },
@@ -25,18 +38,33 @@ export default {
 </script>
 
 <style module>
+.container {
+  width: 100%;
+}
+
+.info {
+  text-align: left;
+  padding: 0 8px;
+  color: #777777;
+}
+
+.info .plugin,
+.info .visitor {
+  color: #2196F3;
+}
+
 .slider {
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: space-around;
+  border-bottom: solid 1px var(--gray);
 }
 
 .sliderItem {
   width: 100%;
   text-align: center;
-  line-height: 25px;
-  height: 25px;
+  height: 50px;
   border-right: solid 1px var(--gray);
 }
 
@@ -46,6 +74,6 @@ export default {
 
 .sliderItem:hover,
 .current {
-  background: var(--green);
+  background: var(--gray);
 }
 </style>
