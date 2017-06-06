@@ -9,17 +9,22 @@ import _babelWorker from "worker-loader!./babel-worker.js";
 
 export const babelWorker = new PromiseWorker(_babelWorker());
 
+function getSource(code) {
+  return {
+    code,
+    pluginAlias: "source",
+    visitorType: "enter"
+  };
+}
+
+const sourcePluginAlias = "source";
+const sourceVisitorType = "enter";
+
 export default new Vuex.Store({
   strict: true,
   state: {
     current: 0,
-    transitions: [
-      {
-        code: "class Foo {}",
-        pluginAlias: "source",
-        visitorType: "enter"
-      }
-    ],
+    transitions: [getSource("class Foo {}")],
     options: {
       presets: ["es2015", "babili"]
     },
@@ -42,7 +47,7 @@ export default new Vuex.Store({
       if (state.error) {
         state.error = void 0;
       }
-      state.transitions[0] = { code };
+      state.transitions[0] = getSource(code);
     },
     updatePresets(state, presets) {
       state.options.presets = [...presets];
