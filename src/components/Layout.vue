@@ -22,9 +22,6 @@
         <slot name="slider"></slot>
       </div>
     </main>
-    <footer :class="$style.footer">
-      <slot name="footer"></slot>
-    </footer>
   </div>
 </template>
 
@@ -93,9 +90,5 @@ export default {
 .errors {
   width: var(--width);
   position: relative;
-}
-
-.footer {
-  width: var(--width);
 }
 </style>
