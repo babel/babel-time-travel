@@ -30,7 +30,12 @@ registerPromiseWorker(function babelTransform(
           transitions.length === 0 ||
           transitions[transitions.length - 1].code !== code
         ) {
-          transitions.push({ code, pluginAlias, visitorType });
+          transitions.push({
+            code,
+            pluginAlias,
+            visitorType,
+            currentNode: args[0].node.type
+          });
         }
         callback.call(this, ...args);
       };

@@ -1,7 +1,7 @@
 <template>
   <div :class="$style.container">
     <div :class="$style.slider">
-      <div :class="{ [$style.sliderItem]: true, [$style.current]: i === current}" v-for="(item, i) in items" @mouseover="selectItem(i)">
+      <div :class="{ [$style.sliderItem]: true, [$style.current]: i === current}" v-for="(item, i) in items" @mouseover="selectItem(i)" v-bind:key="item">
       </div>
     </div>
     <div :class="$style.info">
@@ -25,7 +25,9 @@ export default {
       return this.$store.state.transitions[this.current].pluginAlias;
     },
     currentVisitor() {
-      return this.$store.state.transitions[this.current].visitorType;
+      const transition = this.$store.state.transitions[this.current];
+      const currentNode = transition.currentNode || "File";
+      return currentNode + " " + transition.visitorType;
     },
     current() {
       return this.$store.state.current;

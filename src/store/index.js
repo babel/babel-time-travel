@@ -90,10 +90,11 @@ export default new Vuex.Store({
         .postMessage(message, [message.source])
         .then(result => {
           const transitions = result.transitions.map(
-            ({ code, pluginAlias, visitorType }) => ({
+            ({ code, pluginAlias, visitorType, currentNode }) => ({
               code: ab2str(code),
               pluginAlias,
-              visitorType
+              visitorType,
+              currentNode
             })
           );
 
