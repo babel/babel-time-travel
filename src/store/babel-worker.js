@@ -1,5 +1,5 @@
 import registerPromiseWorker from "promise-worker-transferable/register";
-import babelPresetBabili from "babel-preset-babili";
+import babelPresetMinify from "babel-preset-minify";
 import generate from "babel-generator";
 import { str2ab, ab2str } from "./buffer-utils";
 
@@ -11,8 +11,8 @@ registerPromiseWorker(function babelTransform(
 ) {
   if (Array.isArray(options.presets)) {
     for (const [i, preset] of options.presets.entries()) {
-      if (preset === "babili") {
-        options.presets[i] = babelPresetBabili;
+      if (preset === "minify") {
+        options.presets[i] = babelPresetMinify;
       }
     }
   }
