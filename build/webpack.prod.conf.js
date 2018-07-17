@@ -8,7 +8,7 @@ var CopyWebpackPlugin = require("copy-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
-var BabiliPlugin = require("babili-webpack-plugin");
+var MinifyPlugin = require("babel-minify-webpack-plugin");
 var swWebpackConfig = require("./webpack.sw.conf");
 
 var env = config.build.env;
@@ -31,8 +31,8 @@ var webpackConfig = merge(baseWebpackConfig, {
     new webpack.DefinePlugin({
       "process.env": env
     }),
-    // Let's use Babili Plugin
-    new BabiliPlugin(),
+    // Let's use Minify Plugin
+    new MinifyPlugin(),
     // extract css into its own file
     new ExtractTextPlugin({
       filename: utils.assetsPath("css/[name].[contenthash].css")
@@ -117,7 +117,7 @@ const swConfig = merge(swWebpackConfig, {
     new webpack.DefinePlugin({
       "process.env": env
     }),
-    new BabiliPlugin()
+    new MinifyPlugin()
   ]
 });
 
