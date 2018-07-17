@@ -60,5 +60,8 @@
   },
   "browserslist": [
     "last 2 versions"
-  ]
+  ],
+  "resolutions": {
+    "webpack-sources": "1.0.1"
+  }
 }
