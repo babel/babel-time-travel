@@ -7,7 +7,9 @@
     <div :class="$style.info">
       Current Plugin:
       <span :class="$style.plugin">{{currentPlugin}}</span>, Current Visitor:
-      <span :class="$style.visitor">{{currentVisitor}}</span>
+      <span :class="$style.visitor">{{currentVisitor}}</span>, Size:
+      <span :class="$style.visitor">{{currentSize}}</span>
+
     </div>
   </div>
 </template>
@@ -21,6 +23,10 @@ export default {
     }
   },
   computed: {
+    currentSize() {
+      return this.$store.state.transitions[this.current].size;
+    },
+
     currentPlugin() {
       return this.$store.state.transitions[this.current].pluginAlias;
     },
