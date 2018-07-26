@@ -11,3 +11,5 @@ export function str2ab(str) {
   }
   return buf;
 }
+
+

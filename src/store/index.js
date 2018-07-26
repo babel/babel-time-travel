@@ -2,6 +2,7 @@ import Vue from "vue";
 import Vuex from "vuex";
 import PromiseWorker from "promise-worker-transferable";
 import { str2ab, ab2str } from "./buffer-utils";
+import { prettySize } from "./byte-utils"
 
 Vue.use(Vuex);
 
@@ -13,7 +14,8 @@ function getSource(code) {
   return {
     code,
     pluginAlias: "source",
-    visitorType: "enter"
+    visitorType: "enter",
+    size: prettySize(new Blob([code], { type: "text/plain" }).size),
   };
 }
 
@@ -90,11 +92,12 @@ export default new Vuex.Store({
         .postMessage(message, [message.source])
         .then(result => {
           const transitions = result.transitions.map(
-            ({ code, pluginAlias, visitorType, currentNode }) => ({
+            ({ code, pluginAlias, visitorType, currentNode, size }) => ({
               code: ab2str(code),
               pluginAlias,
               visitorType,
-              currentNode
+              currentNode,
+              size: prettySize(new Blob([code], { type: "text/plain" }).size)
             })
           );
 

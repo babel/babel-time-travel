@@ -2,7 +2,6 @@ import registerPromiseWorker from "promise-worker-transferable/register";
 import babelPresetMinify from "babel-preset-minify";
 import generate from "babel-generator";
 import { str2ab, ab2str } from "./buffer-utils";
-
 importScripts("//unpkg.com/babel-standalone@6.24.2/babel.min.js");
 
 registerPromiseWorker(function babelTransform(
@@ -34,7 +33,7 @@ registerPromiseWorker(function babelTransform(
             code,
             pluginAlias,
             visitorType,
-            currentNode: args[0].node.type
+            currentNode: args[0].node.type,
           });
         }
         callback.call(this, ...args);
